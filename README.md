@@ -121,8 +121,8 @@ A production-ready monitoring and alerting solution for GitHub Actions runners u
 
 ```mermaid
 graph TD
-    A[GitHub API] --> C[Azure Function]
-    B[VNet API] --> C
+    A[GitHub API] <-- C[Azure Function]
+    B[VNet API] <-- C
     C --> D[Log Analytics]
     D --> E[Workbook]
     D --> F[Alerts]
