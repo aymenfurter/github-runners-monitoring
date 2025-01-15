@@ -1,0 +1,7 @@
+# Configuration files
+.config/
+# config file for function
+local.settings.json
+func_env
+.python_packages
+*.pyc

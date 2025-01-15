@@ -1,0 +1,6 @@
+azure-functions
+requests
+azure-identity
+azure-keyvault
+azure-monitor-ingestion
+opencensus-ext-azure

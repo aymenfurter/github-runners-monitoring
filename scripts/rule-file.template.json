@@ -1,0 +1,117 @@
+{
+    "properties": {
+        "dataCollectionEndpointId": "##dataCollectionEndpointId##",
+        "streamDeclarations": {
+            "Custom-GHRunnerStatus_CL": {
+                "columns": [
+                    {
+                        "name": "TimeGenerated",
+                        "type": "datetime"
+                    },
+                    {
+                        "name": "RunnerId_s",
+                        "type": "string"
+                    },
+                    {
+                        "name": "Name_s",
+                        "type": "string"
+                    },
+                    {
+                        "name": "Status_s",
+                        "type": "string"
+                    },
+                    {
+                        "name": "OS_s",
+                        "type": "string"
+                    },
+                    {
+                        "name": "Busy_b",
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "Labels_s",
+                        "type": "string"
+                    },
+                    {
+                        "name": "Organization_s",
+                        "type": "string"
+                    },
+                    {
+                        "name": "Computer",
+                        "type": "string"
+                    }
+                ]
+            },
+            "Custom-VNetUsage_CL": {
+                "columns": [
+                    {
+                        "name": "TimeGenerated",
+                        "type": "datetime"
+                    },
+                    {
+                        "name": "SubscriptionId_s",
+                        "type": "string"
+                    },
+                    {
+                        "name": "ResourceGroupName_s",
+                        "type": "string"
+                    },
+                    {
+                        "name": "VNetName_s",
+                        "type": "string"
+                    },
+                    {
+                        "name": "UsageName_s",
+                        "type": "string"
+                    },
+                    {
+                        "name": "CurrentValue_d",
+                        "type": "real"
+                    },
+                    {
+                        "name": "Limit_d",
+                        "type": "real"
+                    },
+                    {
+                        "name": "Unit_s",
+                        "type": "string"
+                    },
+                    {
+                        "name": "UsagePct_d",
+                        "type": "real"
+                    }
+                ]
+            }
+        },
+        "destinations": {
+            "logAnalytics": [
+                {
+                    "workspaceResourceId": "##workspaceResourceId##",
+                    "name": "LogAnalyticsDest"
+                }
+            ]
+        },
+        "dataFlows": [
+            {
+                "streams": [
+                    "Custom-GHRunnerStatus_CL"
+                ],
+                "destinations": [
+                    "LogAnalyticsDest"
+                ],
+                "transformKql": "source | extend TimeGenerated = now()",
+                "outputStream": "Custom-GHRunnerStatus_CL"
+            },
+            {
+                "streams": [
+                    "Custom-VNetUsage_CL"
+                ],
+                "destinations": [
+                    "LogAnalyticsDest"
+                ],
+                "transformKql": "source | extend TimeGenerated = now()",
+                "outputStream": "Custom-VNetUsage_CL"
+            }
+        ]
+    }
+}

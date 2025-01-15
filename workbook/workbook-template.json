@@ -1,0 +1,224 @@
+{
+    "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json",
+    "version": "Notebook/1.0",
+    "items": [
+    {
+      "type": 9,
+      "name": "parameters - 0",
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeRange",
+            "label": "Time Range",
+            "type": 4,
+            "isRequired": true,
+            "value": {
+              "durationMs": 1800000
+            },
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 1800000
+                },
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 14400000
+                },
+                {
+                  "durationMs": 43200000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 172800000
+                },
+                {
+                  "durationMs": 259200000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2592000000
+                }
+              ],
+              "allowCustom": false
+            },
+            "id": "7b5c2811-7e52-492b-9101-7b0b641e98a3"
+          }
+        ]
+      },
+      "styleSettings": {
+        "w": 24,
+        "h": 2,
+        "x": 0,
+        "y": 0,
+        "showBorder": false,
+        "borderStyle": "light thick"
+      },
+      "id": "1983b07b-1687-4a39-a3d0-1d736a25c8b0"
+    },
+    {
+      "type": 1,
+      "name": "text - 1",
+      "content": {
+        "json": "## GitHub Runner Status\r\n\r\nThis Dashboard gives you insight into the IP consumption and Runner status."
+      },
+      "styleSettings": {
+        "showBorder": true,
+        "borderStyle": "light thick",
+        "w": 8,
+        "h": 4,
+        "x": 0,
+        "y": 2
+      },
+      "id": "a4bf86df-e7da-411d-bc38-06c8ef2bed16"
+    },
+    {
+      "type": 3,
+      "name": "Agent Status",
+      "content": {
+        "version": "KqlItem/1.0",
+        "title": "Agent Status",
+        "query": "// Latest status of each runner\nGHRunnerStatus_CL\n| summarize arg_max(TimeGenerated, *) by RunnerId_s\n| project Status_s, Name_s, TimeGenerated\n| order by TimeGenerated desc",
+        "size": 0,
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "/subscriptions/<subscription-id>/resourcegroups/rg-github-runner-status/providers/microsoft.operationalinsights/workspaces/law-ghrunner-monitoring"
+        ],
+        "timeContextFromParameter": "TimeRange",
+        "visualization": "stat"
+      },
+      "styleSettings": {
+        "showBorder": true,
+        "borderStyle": "light thick",
+        "w": 3,
+        "h": 4,
+        "x": 17,
+        "y": 2
+      },
+      "id": "c80cdb80-4164-4d1f-946c-7d95dabb2563"
+    },
+    {
+      "type": 3,
+      "name": "Runner Status Overview (Past Hour)",
+      "content": {
+        "version": "KqlItem/1.0",
+        "title": "Runner Status Overview",
+        "query": "GHRunnerStatus_CL\n| summarize arg_max(TimeGenerated, *) by Name_s\n| summarize \n    ['Active & Idle'] = countif(Status_s == \"online\" and Busy_b == false),\n    ['Active & Busy'] = countif(Status_s == \"online\" and Busy_b == true),\n    ['Offline'] = countif(Status_s == \"offline\")",
+        "size": 0,
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "/subscriptions/<subscription-id>/resourcegroups/rg-github-runner-status/providers/microsoft.operationalinsights/workspaces/law-ghrunner-monitoring"
+        ],
+        "timeContextFromParameter": "TimeRange"
+      },
+      "styleSettings": {
+        "showBorder": true,
+        "borderStyle": "light thick",
+        "w": 9,
+        "h": 4,
+        "x": 8,
+        "y": 2
+      },
+      "id": "8697081a-df7b-4e9e-bf0d-d26682d51673"
+    },
+    {
+      "type": 3,
+      "name": "logs query - 4",
+      "content": {
+        "version": "KqlItem/1.0",
+        "title": "Runner Availability",
+        "query": "// 1. Runner Status Changes in the Last Hour (Timeline View)\n// Shows status transitions to quickly spot unstable runners\nGHRunnerStatus_CL\n| project TimeGenerated, Name_s, Status_s, Organization_s, OS_s, Busy_b\n| order by TimeGenerated desc\n| extend TimeAgo = now() - TimeGenerated\n| project \n    Time = format_datetime(TimeGenerated, 'HH:mm:ss'),\n    ['Minutes Ago'] = tostring(toint(TimeAgo / 1m)),\n    Runner = Name_s,\n    Status = Status_s,\n    OS = OS_s,\n    Busy = Busy_b,\n    Organization = Organization_s",
+        "size": 0,
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "/subscriptions/<subscription-id>/resourcegroups/rg-github-runner-status/providers/microsoft.operationalinsights/workspaces/law-ghrunner-monitoring"
+        ],
+        "timeContextFromParameter": "TimeRange",
+        "visualization": "table"
+      },
+      "styleSettings": {
+        "showBorder": true,
+        "borderStyle": "light thick",
+        "w": 13,
+        "h": 15,
+        "x": 0,
+        "y": 6
+      },
+      "id": "e9ff60dc-989c-4862-8e27-c9dcb654c845"
+    },
+    {
+      "type": 3,
+      "name": "arg query - 5",
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where type =~ 'Microsoft.Network/virtualNetworks'\r\n| where name =~ 'vnetrunner6'\r\n| mv-expand subnets = properties.subnets\r\n| where subnets.name =~ 'runner6'\r\n| extend \r\n    UsedIPs = array_length(subnets.properties.ipConfigurations)\r\n| project \r\n    ['IP Usage'] = UsedIPs",
+        "size": 0,
+        "title": "Used IPs",
+        "visualization": "stat",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "value::all"
+        ]
+      },
+      "styleSettings": {
+        "w": 4,
+        "h": 4,
+        "x": 20,
+        "y": 2,
+        "showBorder": true,
+        "borderStyle": "light thick"
+      },
+      "id": "46aeee0b-7ee3-4371-8e2a-5471366eec86"
+    },
+    {
+      "type": 3,
+      "name": "logs query - 6",
+      "content": {
+        "version": "KqlItem/1.0",
+        "title": "VNET Consumption Usage",
+        "query": "VNetUsage_CL\n| project \n    TimeGenerated,\n    Subscription = SubscriptionId_s,\n    ResourceGroup = ResourceGroupName_s,\n    VNetName = VNetName_s,\n    UsageName = UsageName_s,\n    CurrentValue = CurrentValue_d,\n    Limit = Limit_d,\n    Unit = Unit_s,\n    UsagePercentage = UsagePct_d\n| order by TimeGenerated desc",
+        "size": 0,
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "/subscriptions/<subscription-id>/resourcegroups/rg-github-runner-status/providers/microsoft.operationalinsights/workspaces/law-ghrunner-monitoring"
+        ],
+        "timeContextFromParameter": "TimeRange",
+        "visualization": "linechart"
+      },
+      "styleSettings": {
+        "showBorder": true,
+        "borderStyle": "light thick",
+        "w": 11,
+        "h": 15,
+        "x": 13,
+        "y": 6
+      },
+      "id": "969014d3-8d86-42f8-b395-2d3518f2ae18"
+    }
+  ],
+  "layout": {
+    "type": "grid"
+  },
+  "styleSettings": {
+    "background": "lighter"
+  },
+  "fallbackResourceIds": [
+    "Azure Monitor"
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
