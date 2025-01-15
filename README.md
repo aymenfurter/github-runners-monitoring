@@ -126,11 +126,6 @@ graph TD
     C --> D[Log Analytics]
     D --> E[Workbook Dashboard]
     D --> F[Alert Rules]
-    
-    style C fill:#4a9eda
-    style D fill:#7eb54d
-    style E fill:#f9c231
-    style F fill:#f9c231
 ```
 
 ## 📦 Installation
