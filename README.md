@@ -19,7 +19,7 @@
 
 ## Overview
 
-A production-ready monitoring and alerting solution for GitHub Actions runners using Azure Functions and Log Analytics. Track runner status, detect offline runners, and monitor VNet IP usage in real-time.
+A monitoring and alerting solution for GitHub Actions runners using Azure Functions and Log Analytics. Track runner status, detect offline runners, and monitor VNet IP usage in real-time.
 
 > **Note**: While the data flow has been validated, the alerting functionality requires production testing. Use in production environments at your own discretion.
 
@@ -121,11 +121,16 @@ A production-ready monitoring and alerting solution for GitHub Actions runners u
 
 ```mermaid
 graph TD
-    A[GitHub API] <-- C[Azure Function]
-    B[VNet API] <-- C
+    A[GitHub API] --> C[Azure Function]
+    B[VNet API] --> C
     C --> D[Log Analytics]
-    D --> E[Workbook]
-    D --> F[Alerts]
+    D --> E[Workbook Dashboard]
+    D --> F[Alert Rules]
+    
+    style C fill:#4a9eda
+    style D fill:#7eb54d
+    style E fill:#f9c231
+    style F fill:#f9c231
 ```
 
 ## 📦 Installation
